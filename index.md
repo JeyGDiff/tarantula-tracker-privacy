@@ -59,7 +59,7 @@ We may update this Privacy Policy from time to time. Any changes will be reflect
 ## Contact Information
 
 For questions about this Privacy Policy, please contact:
-- Email: jaredglawrence@gmail.com
+- Email: jeygbiz@gmail.com
 - Subject: Tarantula Tracker Privacy Policy
 
 ## Your Rights
