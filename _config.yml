@@ -1,2 +1,6 @@
 theme: jekyll-theme-minimal
 title: Tarantula Tracker Privacy Policy
+description: Privacy policy for Tarantula Tracker - a proprietary iOS app
+show_downloads: false
+github:
+  is_project_page: false
