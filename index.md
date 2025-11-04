@@ -2,103 +2,232 @@
 
 **Last Updated:** November 3, 2025
 
-## Overview
+## Code-Verified Privacy Statement
 
-Tarantula Tracker is a proprietary local data management app designed to help tarantula owners track feeding schedules, molting events, and care records. This Privacy Policy explains how we handle your information.
+This privacy policy is backed by verifiable technical implementation. We don't just claim to protect your privacy—our code proves it.
 
-## Data Collection and Storage
+## Zero Data Collection - Verified
 
-### Local Data Only
-- All your tarantula data is stored locally on your device using Apple's SwiftData framework
-- No data is transmitted to external servers or third parties
-- Your tarantula information, photos, and care records remain entirely on your device
-- The app operates completely offline and does not require an internet connection
+**Apple Privacy Manifest (PrivacyInfo.xcprivacy):**
+```xml
+<key>NSPrivacyTracking</key>
+<false/>
+<key>NSPrivacyCollectedDataTypes</key>
+<array/>  <!-- Empty array = NO DATA COLLECTED -->
+```
 
-### Information We Collect
-- **Tarantula Records**: Names, species, care schedules, feeding dates, molting dates
-- **Photos**: Optional photos of your tarantulas stored locally on your device
-- **Care Events**: Feeding logs, molting records, and custom events you create
-- **App Preferences**: Theme settings, notification preferences, and feeding interval configurations
+**Codebase Verification:**
+- ❌ **No URLSession** - Zero network requests anywhere in the codebase
+- ❌ **No URLRequest** - No HTTP/HTTPS calls of any kind
+- ❌ **No Analytics SDKs** - No Firebase, Google Analytics, or any third-party tracking
+- ❌ **No Cloud Services** - No iCloud, CloudKit, or external databases
+- ❌ **No Advertising Networks** - No ad SDKs or tracking pixels
+- ❌ **No Social Media SDKs** - No Facebook, Twitter, or social integrations
+- ✅ **100% Local** - All data stored using SwiftData on your device only
 
-## Permissions
+## What the App Actually Does
 
-### Photo Library Access
-- **Purpose**: To allow you to select and store photos of your tarantulas
-- **Usage**: Photos are stored locally within the app's data container
-- **Control**: You can deny photo access and the app will function normally without photos
+### Local Data Storage Only
 
-### Notification Permissions
-- **Purpose**: To send optional daily feeding reminders at 9:00 AM and molt predictions at 10:00 AM
-- **Usage**: Notifications are generated locally by your device
-- **Control**: You can disable notifications in iOS Settings at any time
+**Technology Used:** Apple's SwiftData framework (completely offline)
 
-## Data Security
+**Data Stored Locally (Item.swift):**
+1. **Tarantula Records**
+   - Name, scientific name, common name
+   - Life stage, sex, classification, habitat type
+   - Pre-molt state (boolean)
+   
+2. **Event Logs** (EventLog.swift)
+   - Feeding dates and times
+   - Molt dates and times
+   - Custom event dates you create
+   
+3. **Photos** (Optional)
+   - Stored in app's local container
+   - Uses PHPickerViewController (read-only photo access)
+   - Never uploaded anywhere
 
-- All data is protected by iOS's built-in security features
-- Photos and records are stored in the app's secure container
-- No network transmission of personal data occurs
-- No external servers, databases, or cloud services are used
-- Data is encrypted as part of iOS device encryption
+4. **User Preferences** (UserSettings.swift)
+   - Theme selection
+   - Feeding interval settings per life stage
+   - Molt recovery delay settings
+   - Notification preferences (on/off only)
 
-## Data Sharing
+**Code Reference:** See `tarantula_trackerApp.swift:10-12`
+```swift
+.modelContainer(for: [Tarantula.self, EventLog.self, Event.self])
+```
+This is SwiftData's local-only storage. No cloud configuration exists in the codebase.
 
-- We do not collect, share, or sell any personal information
-- No analytics, tracking, or third-party services are used
-- All data remains private to you and your device
-- No user accounts or registration required
-- No personal information leaves your device
+## Permissions Requested
 
-## Data Export and Backup
+### Photo Library Access (Optional)
+**Code:** `PHPickerViewController` used in TarantulaDetailView.swift
+- **Purpose:** Select photos of your tarantulas
+- **Scope:** Read-only access via PHPicker (no write access)
+- **Storage:** Photos stored in app's local container
+- **Network:** Photos never transmitted anywhere
+- **Required:** No - app works fully without photos
 
-- You can export your data as CSV files for backup purposes
-- Exported files contain only the data you choose to export
-- iOS device backups will include your app data as part of standard backup procedures
-- Exported data is not transmitted to us or any third party
+**Permission String (project.pbxproj):**
+```
+"Access to your photo library is needed to add photos of your tarantulas 
+for identification and record keeping."
+```
+
+### Notification Permissions (Optional)
+**Code:** `UNUserNotificationCenter` in NotificationManager.swift
+- **Purpose:** Local feeding reminders at 9:00 AM and molt predictions at 10:00 AM
+- **Generated:** Locally on your device (no push notifications from servers)
+- **Content:** Contains only your tarantula names and care information
+- **Network:** Notifications never sent to or from external servers
+- **Required:** No - app works fully without notifications
+
+**Permission String (project.pbxproj):**
+```
+"Notifications are used to remind you about feeding schedules 
+for your tarantulas."
+```
+
+### UserDefaults Access
+**Reason Code:** CA92.1 (App preferences and settings)
+- **Purpose:** Store app theme, feeding intervals, notification preferences
+- **Scope:** Standard iOS UserDefaults (local only)
+- **Network:** No synchronization with iCloud or external services
+
+## What This App Does NOT Do
+
+### Verified Absence of These Technologies:
+
+**No Network Layer:**
+```bash
+# Codebase search results:
+grep -r "URLSession" → No matches
+grep -r "URLRequest" → No matches
+grep -r "import Alamofire" → No matches
+```
+
+**No Analytics:**
+```bash
+grep -r "Firebase" → No matches
+grep -r "Analytics" → No matches  
+grep -r "Crashlytics" → No matches
+grep -r "AppCenter" → No matches
+```
+
+**No Tracking:**
+```bash
+NSPrivacyTracking = false (PrivacyInfo.xcprivacy:6)
+NSPrivacyTrackingDomains = [] (empty array)
+```
+
+**No Cloud Storage:**
+```bash
+grep -r "iCloud\|CloudKit\|NSUbiquitousKeyValueStore" → No matches
+```
+
+## Data Sharing & Transmission
+
+**NONE.** The codebase contains:
+- Zero server endpoints
+- Zero API keys
+- Zero cloud service configurations
+- Zero third-party SDK integrations
+
+The only data that leaves the app is when **you explicitly** choose to:
+1. Export CSV files using the "Export CSV" button (SettingsView.swift:383-439)
+2. Share via iOS Share Sheet (your choice of destination)
+
+## Your Complete Control
+
+### Data Location
+- Stored in: `/var/mobile/Containers/Data/Application/[UUID]/Library/Application Support/default.store`
+- Encrypted: Automatically by iOS when device is locked
+- Backed up: Via iOS device backups (encrypted backups recommended)
+
+### Data Deletion
+- **Delete App:** Removes all data permanently (iOS deletes app container)
+- **Delete Individual Records:** Delete tarantulas individually in-app
+- **Clear All:** No bulk clear (intentional - prevents accidental data loss)
+
+### Data Export
+- **Format:** CSV (human-readable text)
+- **Location:** Your choice via iOS Share Sheet
+- **Content:** Only what you choose to export
+- **Method:** File-based export (SettingsView.swift:383-439)
 
 ## Children's Privacy
 
-This app does not collect personal information from children under 13. The app is designed for educational and hobbyist use in tarantula care. Since all data is stored locally and no network transmission occurs, the app complies with COPPA regulations.
+This app:
+- Collects NO personal information from anyone
+- Stores ALL data locally (no collection = no COPPA concerns)
+- Requires NO account creation
+- Performs NO age verification (not needed - no data collected)
 
-## Third-Party Services
+Safe for users of all ages.
 
-Tarantula Tracker does not integrate with or transmit data to any third-party services, including:
-- No analytics services (Google Analytics, Firebase, etc.)
-- No advertising networks
-- No social media integrations
-- No cloud storage services
-- No external APIs or web services
+## Technical Compliance
 
-## Changes to This Policy
+### GDPR Compliance
+- **No Data Processing:** Data never leaves device = no processing
+- **No Data Controller:** You are the sole controller of your data
+- **No Data Transfers:** No cross-border transfers
+- **Right to Deletion:** Delete app = complete data erasure
+- **Right to Access:** Data visible in app at all times
+- **Right to Portability:** CSV export functionality
 
-We may update this Privacy Policy from time to time. Any changes will be reflected in the "Last Updated" date above and included in app updates. Continued use of the app after updates constitutes acceptance of the updated policy.
+### CCPA Compliance
+- **No Sale of Data:** No data collected = nothing to sell
+- **No Sharing:** Data stored locally only
+- **No Third Parties:** Zero third-party integrations
 
-## Contact Information
-
-For questions about this Privacy Policy, please contact:
-- Email: jeygbiz@gmail.com
-- Subject: Tarantula Tracker Privacy Policy
-
-## Your Rights
-
-Since all data is stored locally on your device:
-- You have complete control over your data
-- You can delete the app to remove all data permanently
-- You can export your data at any time
-- No account creation or registration is required
-- You can use the app entirely offline
-- No data is transmitted to us or any third party
+### Apple Privacy Requirements
+- **Privacy Manifest:** Included (PrivacyInfo.xcprivacy)
+- **Privacy Nutrition Labels:** Accurate (no data collection)
+- **Required Reason API:** UserDefaults (CA92.1), FileTimestamp (C617.1), SystemBootTime (35F9.1)
 
 ## Intellectual Property
 
-Tarantula Tracker is proprietary software. All source code, design, and documentation are the property of the developer and are not publicly available. The app is provided as a closed-source application through the Apple App Store.
+Tarantula Tracker is **proprietary, closed-source software**. The source code is not publicly available. This privacy policy is verifiable through:
+- Apple's App Review process
+- Privacy manifest in the app bundle
+- Network traffic analysis (shows zero network activity)
 
-## Compliance
+## Changes to This Policy
 
-This app complies with:
-- Apple's App Store Review Guidelines
-- iOS Privacy Requirements
-- GDPR (General Data Protection Regulation) - through local-only data storage
-- COPPA (Children's Online Privacy Protection Act)
-- California Consumer Privacy Act (CCPA)
+Updates will:
+1. Increment "Last Updated" date
+2. Be included in app updates (visible in version release notes)
+3. Require continued use to constitute acceptance
 
-This Privacy Policy is effective as of the date listed above and applies to all information collected by or submitted to Tarantula Tracker.
+We will never:
+- Add data collection without explicit disclosure
+- Change from local-only storage without your consent
+- Introduce third-party services without notification
+
+## Contact
+
+**Privacy Questions:**
+- Email: jeygbiz@gmail.com
+- Subject: Tarantula Tracker Privacy Policy
+
+**Response Time:** Within 48 hours
+
+## Verification
+
+Want to verify these claims?
+1. **Monitor Network Traffic:** Use a network proxy - you'll see zero app traffic
+2. **Check Privacy Manifest:** Open the .app bundle and read PrivacyInfo.xcprivacy
+3. **Review App Permissions:** iOS Settings → Tarantula Tracker → see limited permissions
+4. **Inspect Local Storage:** iOS File Manager shows only local database files
+
+## Summary
+
+**What We Collect:** NOTHING
+**Where Data Goes:** NOWHERE (stays on your device)
+**Who Sees Your Data:** ONLY YOU
+**Network Requests:** ZERO
+**Third Parties:** ZERO
+**Your Control:** COMPLETE
+
+This privacy policy is effective as of November 3, 2025 and applies to Tarantula Tracker version 1.1 and later.
